@@ -1,0 +1,76 @@
+site_name: SANS Holiday Hack Challenge 2025 Write-up
+site_url: https://tominthebytes.github.io/SANS-HHC-2025/
+theme:
+  name: material
+  custom_dir: overrides
+  palette:
+    scheme: slate
+    primary: custom
+    accent: custom
+  icon:
+    logo: fontawesome/solid/terminal
+    admonition:
+      note: fontawesome/solid/note-sticky
+      abstract: fontawesome/solid/book
+      info: fontawesome/solid/circle-info
+      tip: fontawesome/solid/bullhorn
+      success: fontawesome/solid/check
+      question: fontawesome/solid/circle-question
+      warning: fontawesome/solid/triangle-exclamation
+      failure: fontawesome/solid/bomb
+      danger: fontawesome/solid/skull
+      bug: fontawesome/solid/robot
+      example: fontawesome/solid/flask
+      quote: fontawesome/solid/quote-left
+  features:
+    - navigation.instant
+    - navigation.path
+    - navigation.sections
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tooltips
+plugins:
+  - search
+extra_css:
+  - stylesheets/extra.css
+markdown_extensions:
+  # Python Markdown
+  - toc:
+      permalink: true
+
+  # Python Markdown Extensions
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.details
+  - pymdownx.blocks.caption
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - md_in_html
+  - admonition
+  - attr_list
+  - footnotes
+  - def_list
+  - tables
+nav:
+  - Welcome: index.md
+  - Prologue:
+      - Holiday Hack Orientation: prologue/holiday_hack_orientation.md
+  - Act 1:
+  - Act 2:
+  - Act 3:
