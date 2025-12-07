@@ -2,7 +2,7 @@ site_name: SANS Holiday Hack Challenge 2025 Write-up
 site_url: https://tominthebytes.github.io/SANS-HHC-2025/
 theme:
   name: material
-  custom_dir: overrides
+  # custom_dir: overrides
   palette:
     scheme: slate
     primary: custom
@@ -72,5 +72,8 @@ nav:
   - Prologue:
       - Holiday Hack Orientation: prologue/holiday_hack_orientation.md
   - Act 1:
+      - Defang: act_1/defang.md
   - Act 2:
+      - Dosis Network Down: act_2/dosis_network_down.md
   - Act 3:
+      - Hack-a-Gnome: act_3/hack_a_gnome.md
