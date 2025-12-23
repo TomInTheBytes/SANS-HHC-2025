@@ -2,7 +2,7 @@
 
 This is a complete write-up for the [SANS Holiday Hack Challenge 2025](https://www.sans.org/cyber-ranges/holiday-hack-challenge/). This is a yearly capture-the-flag event organized by the SANS training institute around the holiday period. It is free of charge and played in form of an online multiplayer rpg-like game including a world to walk around freely in where you can meet your peers, NPCs with dialogue, and a storyline, making it a unique CTF.
 
-![Main](images/other/home_1.png)
+![Main](media/other/home_1.png)
 /// caption
 Multiplayer world to roam around in.
 ///

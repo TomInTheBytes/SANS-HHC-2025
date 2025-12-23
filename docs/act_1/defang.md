@@ -44,17 +44,44 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
 
 ## Solution
 
-??? success "Solution to question 1"
+The answers can be found by using various regexes. Regexes for these types of indicators can be found [online](https://regexlib.com/). Various regexes used to solve this exercise are:
+
+Domains:
 
 ```
-https://regexlib.com/Search.aspx?k=email&c=-1&m=5&ps=20
-domains: ([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}
-ips: (25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]{1,2})){3}
-urls: ((((H|h)(T|t)|(F|f))(T|t)(P|p)((S|s)?))\://)?(www.|[a-zA-Z0-9].)[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,6}(\:[0-9]{1,5})*(/($|[a-zA-Z0-9\.\,\;\?\'\\\+&amp;%\$#\=~_\-]+))*
-emails: [0-9a-zA-Z]+([0-9a-zA-Z]*[-._+])*[0-9a-zA-Z]+@[0-9a-zA-Z]+([-.][0-9a-zA-Z]+)*([0-9a-zA-Z]*[.])[a-zA-Z]{2,6}
+([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}
+```
 
+IP addresses:
+
+```
+(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]{1,2})){3}
+```
+
+URLs:
+
+```
+((((H|h)(T|t)|(F|f))(T|t)(P|p)((S|s)?))\://)?(www.|[a-zA-Z0-9].)[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,6}(\:[0-9]{1,5})*(/($|[a-zA-Z0-9\.\,\;\?\'\\\+&amp;%\$#\=~_\-]+))*
+```
+
+Emails:
+
+```
+[0-9a-zA-Z]+([0-9a-zA-Z]*[-._+])*[0-9a-zA-Z]+@[0-9a-zA-Z]+([-.][0-9a-zA-Z]+)*([0-9a-zA-Z]*[.])[a-zA-Z]{2,6}
+```
+
+Defang using sed:
+
+```
 s/:\//[://]/g;s/http/hxxp/g;s/@/[@]/g;s/\./[.]/g
 ```
+
+??? success "Solution"
+
+    ![answer](../media/defang/defang_1)
+    /// caption
+    Answer to challenge.
+    ///
 
 ## Response
 

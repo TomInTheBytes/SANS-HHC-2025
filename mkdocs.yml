@@ -32,6 +32,7 @@ theme:
     - content.tooltips
 plugins:
   - search
+  - glightbox
 extra_css:
   - stylesheets/extra.css
 markdown_extensions:
@@ -72,8 +73,18 @@ nav:
   - Prologue:
       - Holiday Hack Orientation: prologue/holiday_hack_orientation.md
   - Act 1:
+      - Blob Storage Challenge in the Neighborhood: act_1/storage_secrets.md
       - Defang: act_1/defang.md
+      - Intro to Nmap: act_1/intro_to_nmap.md
+      - Neighborhood Watch Bypass: act_1/fire_alarm.md
+      - Owner: act_1/owner.md
+      - Santa's Gift-Tracking Service Port Mystery: act_1/santas_gift_tracking.md
+      - Spare Key: act_1/spare_key.md
+      - The Open Door: act_1/the_open_door.md
+      - Visual Firewall Thinger: act_1/visual_firewall.md
+      - Visual Networking Thinger: act_1/visual_networking.md
   - Act 2:
       - Dosis Network Down: act_2/dosis_network_down.md
+      - Rogue Gnome Identity Provider: act_2/gnome_identity.md
   - Act 3:
       - Hack-a-Gnome: act_3/hack_a_gnome.md

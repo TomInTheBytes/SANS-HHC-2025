@@ -40,42 +40,49 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
 
 ## Solution
 
-This challenge presents us a website where we have to simulate typical network requests.
+This challenge presents us a website where we have to simulate typical network requests. The solutions are as follows:
 
 ??? success "Solution to question 1"
 
-    ![Main](media/visual_networking/visual_networking_chal_1)
+    ![Main](../media/visual_networking/visual_networking_chal_1)
     /// caption
     Solution to question 1.
     ///
 
 ??? success "Solution to question 2"
 
-    ![Main](media/visual_networking/visual_networking_chal_2)
+    ![Main](../media/visual_networking/visual_networking_chal_2)
     /// caption
     Solution to question 2.
     ///
 
 ??? success "Solution to question 3"
 
-    ![Main](media/visual_networking/visual_networking_chal_3)
+    ![Main](../media/visual_networking/visual_networking_chal_3)
     /// caption
     Solution to question 3.
     ///
 
 ??? success "Solution to question 4"
 
-    ![Main](media/visual_networking/visual_networking_chal_4)
+    ![Main](../media/visual_networking/visual_networking_chal_4)
     /// caption
     Solution to question 4.
     ///
 
 ??? success "Solution to question 5"
 
-    ![Main](media/visual_networking/visual_networking_chal_5)
+    ![Main](../media/visual_networking/visual_networking_chal_5)
     /// caption
     Solution to question 5.
     ///
+
+## Images
+
+![answer](../media/visual_networking/visual_networking_1)
+/// caption
+Challenge GUI.
+///
 
 ## Response
 

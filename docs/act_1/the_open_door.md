@@ -30,16 +30,25 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
 
 ??? success "Solution"
 
-```
-az group list
-az group list -o table
-az network nsg list -o table
-az network nsg show --name nsg-web-eastus --resource-group theneighborhood-rg1 | less
-az network nsg rule list --nsg-name nsg-mgmt-eastus --resource-group theneighborhood-rg2 | less
-az network nsg rule list --nsg-name nsg-production-eastus --resource-group theneighborhood-rg1 | less
-az network nsg rule show --nsg-name nsg-production-eastus --resource-group theneighborhood-rg1 --name Allow-RDP-From-Internet | less
-finish
-```
+    We need to execute the following commands:
+
+    ``` sh linenums="1"
+    az group list
+    az group list -o table
+    az network nsg list -o table
+    az network nsg show --name nsg-web-eastus --resource-group theneighborhood-rg1 | less
+    az network nsg rule list --nsg-name nsg-mgmt-eastus --resource-group theneighborhood-rg2 | less
+    az network nsg rule list --nsg-name nsg-production-eastus --resource-group theneighborhood-rg1 | less
+    az network nsg rule show --nsg-name nsg-production-eastus --resource-group theneighborhood-rg1 --name Allow-RDP-From-Internet | less
+    finish
+    ```
+
+## Images
+
+![answer](../media/the_open_door/the_open_door_1)
+/// caption
+Challenge terminal.
+///
 
 ## Response
 

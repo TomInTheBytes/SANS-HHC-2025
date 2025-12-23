@@ -26,47 +26,57 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
 
 ## Solution
 
-```
-az help | less
-az account show | less
-az storage account list | less
-az storage account show --name neighborhood2 | less
-az storage container list --account-name neighborhood2
-az storage blob list --account-name neighborhood2 --container-name public
-az storage blob download --account-name neighborhood2 --container-name public --name admin_credentials.txt --file /dev/stdout | less
-finish
-```
+??? success "Solution"
 
-??? success "Solution to question 1"
+    We need to execute the following commands:
 
-```
-  {
-    "id": "/subscriptions/2b0942f3-9bca-484b-a508-abdae2db5e64/resourceGroups/theneighborhood-rg1/providers/Microsoft.Storage/storageAccounts/neighborhood2",
-    "kind": "StorageV2",
-    "location": "eastus2",
-    "name": "neighborhood2",
-    "properties": {
-      "accessTier": "Cool",
-      "allowBlobPublicAccess": true,
-      "encryption": {
-        "keySource": "Microsoft.Storage",
-        "services": {
-          "blob": {
-            "enabled": false
-          }
+    ``` sh linenums="1"
+    az help | less
+    az account show | less
+    az storage account list | less
+    az storage account show --name neighborhood2 | less
+    az storage container list --account-name neighborhood2
+    az storage blob list --account-name neighborhood2 --container-name public
+    az storage blob download --account-name neighborhood2 --container-name public --name admin_credentials.txt --file /dev/stdout | less
+    finish
+    ```
+    Look for the following object:
+
+    ``` json
+      {
+        "id": "/subscriptions/2b0942f3-9bca-484b-a508-abdae2db5e64/resourceGroups/theneighborhood-rg1/providers/Microsoft.Storage/storageAccounts/neighborhood2",
+        "kind": "StorageV2",
+        "location": "eastus2",
+        "name": "neighborhood2",
+        "properties": {
+          "accessTier": "Cool",
+          "allowBlobPublicAccess": true,
+          "encryption": {
+            "keySource": "Microsoft.Storage",
+            "services": {
+              "blob": {
+                "enabled": false
+              }
+            }
+          },
+          "minimumTlsVersion": "TLS1_0"
+        },
+        "resourceGroup": "theneighborhood-rg1",
+        "sku": {
+          "name": "Standard_GRS"
+        },
+        "tags": {
+          "owner": "Admin"
         }
       },
-      "minimumTlsVersion": "TLS1_0"
-    },
-    "resourceGroup": "theneighborhood-rg1",
-    "sku": {
-      "name": "Standard_GRS"
-    },
-    "tags": {
-      "owner": "Admin"
-    }
-  },
-```
+    ```
+
+## Images
+
+![answer](../media/storage_secrets/storage_secrets_1)
+/// caption
+Challenge terminal.
+///
 
 ## Response
 

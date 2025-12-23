@@ -30,12 +30,21 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
 
 ## Solution
 
-??? success "Solution to question 1"
+??? success "Solution"
 
-```
-ss -tlnp
-curl 0.0.0.0:12321
-```
+    We need to execute the following commands:
+
+    ``` sh linenums="1"
+    ss -tlnp
+    curl 0.0.0.0:12321
+    ```
+
+## Images
+
+![answer](../media/santas_gift_tracking/santas_gift_tracking_1)
+/// caption
+Challenge terminal.
+///
 
 ## Response
 

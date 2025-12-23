@@ -34,7 +34,49 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
 
 ## Solution
 
-??? success "Solution to question 1"
+We need to configure the firewall correctly according to the configuration goals using the GUI. The settings should be as follows:
+
+??? success "Solution for Cloud Services"
+
+    ![answer](../media/visual_firewall/visual_firewall_cloud)
+    /// caption
+    Solution for Cloud Services.
+    ///
+
+??? success "Solution for DMZ"
+
+    ![answer](../media/visual_firewall/visual_firewall_dmz)
+    /// caption
+    Solution for DMZ.
+    ///
+
+??? success "Solution for Internal"
+
+    ![answer](../media/visual_firewall/visual_firewall_internal)
+    /// caption
+    Solution for Internal.
+    ///
+
+??? success "Solution for Internet"
+
+    ![answer](../media/visual_firewall/visual_firewall_internet)
+    /// caption
+    Solution for Internet.
+    ///
+
+??? success "Solution for Workstations"
+
+    ![answer](../media/visual_firewall/visual_firewall_workstations)
+    /// caption
+    Solution for Workstations.
+    ///
+
+## Images
+
+![answer](../media/visual_firewall/visual_firewall_1)
+/// caption
+Challenge GUI.
+///
 
 ## Response
 
