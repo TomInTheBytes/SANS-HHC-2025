@@ -46,31 +46,42 @@ Difficulty: :material-star::material-star::material-star-outline::material-star-
 
 ## Solution
 
-??? success "Solution to question 1"
+This challenge is about [insecure direct object references (IDOR)](https://www.youtube.com/watch?v=hzrhtHrhwno). We are presented with a receipt verification system using QR codes.
+
+We can find a receipt laying on the ground outside of the restaurant (or via [this](https://www.holidayhackchallenge.com/2025/assets/receipt.png) link):
+
+![answer](../media/idorable_bistro/idorable_bistro_receipt)
+/// caption
+Receipt.
+///
+
+The QR code on the receipt links to [this](https://its-idorable.holidayhackchallenge.com/receipt/i9j0k1l2) URL:
+
+`https://its-idorable.holidayhackchallenge.com/receipt/i9j0k1l2`
+
+The system seems to use a relatively long unique receipt ID in the URL that cannot easily be brute forced. However, when looking more closely at the actual requests being made using Burp, we see that an API request is made to `/api/receipt?id=103`. This type of ID is not unique and can easily be guessed. We can leverage the Burp Intruder to do this:
+
+![answer](../media/idorable_bistro/idorable_bistro_burp)
+/// caption
+Leverage Burp Intruder to brute force ID.
+///
+
+When doing this we will find many different receipt with funny notes. However, ID `139` gives us the following related to the question asked in the dialogue:
 
 ```
-https://its-idorable.holidayhackchallenge.com/
-https://www.holidayhackchallenge.com/2025/assets/receipt.png
-https://www.youtube.com/watch?v=hzrhtHrhwno
-https://its-idorable.holidayhackchallenge.com/receipt/i9j0k1l2
-dev tools /api/receipt?id=101
-use burp intruder to iterate over requests
-funny notes
-
-HTTP/2 200 OK
-Content-Type: application/json
-X-Cloud-Trace-Context: 480df4c25a86b0a6d049bb40ca6880b4
-Date: Sat, 15 Nov 2025 20:06:57 GMT
-Server: Google Frontend
-Content-Length: 438
-Via: 1.1 google
-Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-
 {"customer":"Bartholomew Quibblefrost","date":"2025-12-20","id":139,"items":[{"name":"Frozen Roll (waitress improvised: sorbet, a hint of dry ice)","price":19.0}],"note":"Insisted on increasingly bizarre rolls and demanded one be served frozen. The waitress invented a 'Frozen Roll' on the spot with sorbet and a puff of theatrical smoke. He nodded solemnly and asked if we could make these in bulk.","paid":true,"table":14,"total":19.0}
-
-
-Bartholomew Quibblefrost
 ```
+
+??? success "Solution"
+
+    The solution to this question is `Bartholomew Quibblefrost`.
+
+## Images
+
+![answer](../media/idorable_bistro/idorable_bistro_1)
+/// caption
+Challenge webpage.
+///
 
 ## Response
 

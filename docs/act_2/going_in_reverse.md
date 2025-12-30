@@ -44,9 +44,9 @@ Difficulty: :material-star::material-star::material-star-outline::material-star-
 
 ## Solution
 
-??? success "Solution to question 1"
+We receive the following BASIC program:
 
-```
+```basic title="BASIC program with added comments"linenums="1"
 # Comment
 10 REM *** COMMODORE 64 SECURITY SYSTEM ***
 # Set password
@@ -67,15 +67,21 @@ Difficulty: :material-star::material-star::material-star-outline::material-star-
 # halt
 90 PRINT "ACCESS DENIED"
 100 END
-
-https://www.c64-wiki.com/wiki/ASC
-https://www.c64-wiki.com/wiki/MID$
-https://gchq.github.io/CyberChef/#recipe=XOR(%7B'option':'Hex','string':'7'%7D,'Standard',false)&input=RFNBfGF1aHRzKndrZmk9ZGhqd3VidHRodXQrZGhoa2Zpcytobmt6&oeol=CR
-
-CTF{vintage_Xor_fun}
-CTF{frost-plan:compressors,coolant,oil}
-C64RULES
 ```
+
+!!! example "AI usage"
+
+    Used to validate understanding of script.
+
+The flag is encoded as `DSA|auhts*wkfi=dhjwubtthut+dhhkfis+hnkz` with XOR 7. We can use CyberChef to decode it using [this](<https://gchq.github.io/CyberChef/#recipe=XOR(%7B'option':'Hex','string':'7'%7D,'Standard',false)&input=RFNBfGF1aHRzKndrZmk9ZGhqd3VidHRodXQrZGhoa2Zpcytobmt6&oeol=CR>) recipe.
+
+??? success "Solution to question 1"
+
+    The flag is `CTF{frost-plan:compressors,coolant,oil}`.
+
+    Note that the 'old' flag that is still present as comment is `CTF{vintage_Xor_fun}`.
+
+    We could also have found the flag by running the program by decoding the password `D13URKBT`, which is encoded by XOR 7 as well, to `C64RULES`.
 
 ## Response
 
