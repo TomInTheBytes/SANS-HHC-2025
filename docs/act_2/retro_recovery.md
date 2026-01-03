@@ -50,33 +50,17 @@ Difficulty: :material-star::material-star::material-star-outline::material-star-
 
 ## Solution
 
-??? success "Solution to question 1"
+We receive a floppy image to analyze. We will need specialized software to carve any removed files from the image. We can use `QPhotoRec` for this:
 
-```
-sudo mkdir /mnt/floppy
-sudo mount -o ro floppy.img /mnt/floppy
-/mnt/floppy/qb45$ ls -la
-total 579
-drwxr-xr-x. 2 root root    512 Mar 18  2025 .
-drwxr-xr-x. 3 root root   7168 Jan  1  1970 ..
--rwxr-xr-x. 1 root root  97481 Mar 18  2025 BC.EXE
--rwxr-xr-x. 1 root root  77440 Mar 18  2025 BRUN45.EXE
--rwxr-xr-x. 1 root root  35643 Mar 18  2025 LIB.EXE
--rwxr-xr-x. 1 root root  69133 Mar 18  2025 LINK.EXE
--rwxr-xr-x. 1 root root  14674 Mar 18  2025 MOUSE.COM
--rwxr-xr-x. 1 root root   9506 Mar 18  2025 PACKING.LST.txt
--rwxr-xr-x. 1 root root 278804 Mar 18  2025 QB.EXE
--rwxr-xr-x. 1 root root     69 Mar 18  2025 QB.INI
+- Open QPhotoRec.
+- Select `floppy.img` as media to recover.
+- Select file system type `FAT`.
+- Select scan type `Free`.
+- Select destination folder to save recovered files to.
+- Press `Search`.
+- Open folder with recovered files, which will contain as `.bas` file.
 
-
-qphotorec
-load floppy.img
-found 1 txt file
-startrek game
-contains base64 line in beginning commented
-bWVycnkgY2hyaXN0bWFzIHRvIGFsbCBhbmQgdG8gYWxsIGEgZ29vZCBuaWdodAo=
-merry christmas to all and to all a good night
-
+```title="f0000038.bas"
 1 REM original file superstartrek.bas dated 2/13/2009 from bcg.tar.gz
 2 REM QBasic conversion by WTN...
 3 REM 2/16/2021 - uncrunched, changed B9=2 to B9=0, added RANDOMIZE and SLEEP
@@ -105,10 +89,13 @@ merry christmas to all and to all a good night
 210 REM *** BY USING "?" INSTEAD OF "PRINT" WHEN ENTERING LINES
 211 REM bWVycnkgY2hyaXN0bWFzIHRvIGFsbCBhbmQgdG8gYWxsIGEgZ29vZCBuaWdodAo=
 215 REM ***
-
-
-https://retrogamecoders.com/c64-emulator/?basic=f0000038.prg
 ```
+
+??? success "Solution to challenge"
+
+    The line starting with `211` contains a base64 encoded string. This decodes to the solution to the challenge:
+
+    `merry christmas to all and to all a good night`
 
 ## Response
 
