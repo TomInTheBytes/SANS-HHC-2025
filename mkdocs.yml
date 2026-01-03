@@ -8,7 +8,7 @@ theme:
     primary: custom
     accent: custom
   icon:
-    logo: fontawesome/solid/terminal
+    logo: fontawesome/solid/sleigh
     admonition:
       note: fontawesome/solid/note-sticky
       abstract: fontawesome/solid/book
