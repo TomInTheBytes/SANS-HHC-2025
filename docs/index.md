@@ -1,10 +1,14 @@
 # SANS Holiday Hack Challenge 2025 Write-Up
 
-This is a complete write-up for the [SANS Holiday Hack Challenge 2025](https://www.sans.org/cyber-ranges/holiday-hack-challenge/). This is a yearly capture-the-flag event organized by the SANS training institute around the holiday period. It is free of charge and played in form of an online multiplayer rpg-like game including a world to walk around freely in where you can meet your peers, NPCs with dialogue, and a storyline, making it a unique CTF.
+This is a write-up for the [SANS Holiday Hack Challenge 2025](https://www.sans.org/cyber-ranges/holiday-hack-challenge/). This is a yearly capture-the-flag event organized by the SANS training institute around the holiday period. It is free of charge and played in form of an online multiplayer rpg-like game including a world to walk around freely in where you can meet your peers, NPCs with dialogue, and a storyline, making it a unique CTF.
 
-![Main](media/other/home_1.png)
+!!! note
+
+    This write-up is not complete. Some objectives from Act 3 are missing.
+
+![Main](media/index)
 /// caption
-Multiplayer world to roam around in.
+Multiplayer world to roam around in, this year in 3D!
 ///
 
 ## Challenge topics 2025
@@ -31,11 +35,11 @@ These have been of great help to call-out side content without interrupting the 
 
 !!! tip "Hint"
 
-    Hints provided by the CTF will be shown in a tip box. They will include {==highlighted text==} to show what part of the hint triggers me as 'important'.
+    Hints provided by the CTF will be shown in a tip box. They can include {==highlighted text==} to show what part of the hint triggers me as 'important'.
 
 !!! quote "Conversation"
 
-    Character conversations will be shown in a quote box. They will include {==highlighted text==} to show what part of the conversation triggers me as 'important'.
+    Character conversations will be shown in a quote box. They can include {==highlighted text==} to show what part of the conversation triggers me as 'important'.
 
 !!! success "Answer"
 
@@ -56,5 +60,3 @@ When there is more to share, annotations will be used, like here. # (1)!
 ```
 
 1. They will contain more information.
-
-## Conclusion with Santa
