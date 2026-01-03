@@ -1,0 +1,29 @@
+:root {
+  --md-primary-fg-color: #aa0000;
+  --md-accent-fg-color: #005000;
+}
+
+/* Striped via pseudo-element (no gradients) */
+.md-header {
+  position: relative;
+  background-color: #023800;
+  color: #ffffff;
+}
+
+.md-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 6px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    #b30000 0 12px,
+    #ffffff 12px 24px
+  );
+}
+
+.md-tabs {
+  background: linear-gradient(45deg, #ffc105 0%, #d46700 100%);
+}
